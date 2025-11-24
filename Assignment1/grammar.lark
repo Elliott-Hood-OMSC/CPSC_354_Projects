@@ -1,0 +1,26 @@
+?start: expr
+
+?expr: sum
+
+?sum: product
+    | sum "+" product   -> plus
+    | sum "-" product   -> minus
+
+?product: unary
+        | product "*" unary -> times
+
+?unary: "-" unary -> neg
+      | power
+
+?power: atom
+      | atom "^" power   -> power
+
+?atom_basic: NUMBER      -> num
+           | "(" expr ")"
+
+?atom: "log" atom_basic "base" atom_basic -> logbase
+     | atom_basic
+
+%import common.NUMBER
+%import common.WS
+%ignore WS
