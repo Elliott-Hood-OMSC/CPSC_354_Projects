@@ -40,13 +40,18 @@ def evaluate(tree):
         if e1[0] == 'lam':
             body = e1[2]
             name = e1[1]
-            arg = tree[2]
+            arg = evaluate(tree[2])  # evaluate argument before substituting (call-by-value)
             rhs = substitute(body, name, arg)
             result = evaluate(rhs)
             pass
         else:
-            result = ('app', e1, tree[2])
+            e2 = evaluate(tree[2])  # also evaluate the argument in case function doesn't reduce
+            result = ('app', e1, e2)
             pass
+    elif tree[0] == 'lam':
+        # ADDED: also reduce inside lambda bodies to reach full normal form
+        body = evaluate(tree[2])
+        result = ('lam', tree[1], body)
     else:
         result = tree
         pass
